@@ -25,12 +25,19 @@ namespace AzureDevOpsWiki.Controllers
 
         public WikiController()
         {
-            pat = Env.GetEnvironmentVariable(Env.Keys.PAT);
-            accountName = Env.GetEnvironmentVariable(Env.Keys.ORGANIZATION);
-            projectId = Guid.Parse(Env.GetEnvironmentVariable(Env.Keys.PROJECTID));
-            repositoryId = Guid.Parse(Env.GetEnvironmentVariable(Env.Keys.WIKIID));
-            markdownServerUrl = Env.GetEnvironmentVariable(Env.Keys.MARKDOWNSERVICE);
-            sharedAccessSignature = Env.GetEnvironmentVariable(Env.Keys.SAS);
+            pat = "d7j623s4enrrzigdhzuk2oyqcguy2oq2x33t5inldadzqpxxi5bq";
+            accountName = "transport-logistics";
+            projectId = Guid.Parse("74d260f8-37a7-4580-83dd-f0fe2a608fb6");
+            repositoryId = Guid.Parse("390b2b76-0bbf-41d3-a17d-6198694ab069");
+            markdownServerUrl = "https://markdowntohtml.azurewebsites.net/";
+            sharedAccessSignature = "ZtvQEPptpoUEVy0MktRlGXK4Os6ses2r8d";
+
+            //pat = Env.GetEnvironmentVariable(Env.Keys.PAT);
+            //accountName = Env.GetEnvironmentVariable(Env.Keys.ORGANIZATION);
+            //projectId = Guid.Parse(Env.GetEnvironmentVariable(Env.Keys.PROJECTID));
+            //repositoryId = Guid.Parse(Env.GetEnvironmentVariable(Env.Keys.WIKIID));
+            //markdownServerUrl = Env.GetEnvironmentVariable(Env.Keys.MARKDOWNSERVICE);
+            //sharedAccessSignature = Env.GetEnvironmentVariable(Env.Keys.SAS);
 
             client = new AzureDevOpsClient(accountName, pat);
         }
@@ -47,9 +54,9 @@ namespace AzureDevOpsWiki.Controllers
         }
 
         [HttpGet("hierarchy")]
-        public async Task<ActionResult<VstsWikiPage>> GetWikiHierarchyAsync(string sas)
+        public async Task<ActionResult<VstsWikiPage>> GetWikiHierarchyAsync()
         {
-            if (!sharedAccessSignature.Equals(sas))
+            if (!Request.HasValidApiKey(sharedAccessSignature))
             {
                 return new UnauthorizedResult();
             }
@@ -61,7 +68,7 @@ namespace AzureDevOpsWiki.Controllers
         [HttpGet("content")]
         public async Task<ActionResult<VstsWikiPage>> GetWikiPageAsync(string pagePath, string sas)
         {
-            if (!sharedAccessSignature.Equals(sas))
+            if (!Request.HasValidApiKey(sharedAccessSignature))
             {
                 return new UnauthorizedResult();
             }
